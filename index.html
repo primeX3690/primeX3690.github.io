@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Raghavendra Pratap Singh — Deep Tech Robotics &amp; AI Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B0F14; --panel:#121821; --panel-2:#161D27;
+    --line:#26313D; --line-soft:#1B232D;
+    --text:#E8EDF2; --text-dim:#8A97A6; --text-faint:#5B6774;
+    --amber:#FFB454; --amber-dim:#8A6A3A; --cyan:#59C2C6; --green:#7FD08A;
+    --todo:#FF5C5C;
+    --mono:'JetBrains Mono', ui-monospace, monospace;
+    --sans:'Inter', system-ui, sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg); color:var(--text); font-family:var(--sans); line-height:1.6; -webkit-font-smoothing:antialiased;}
+  body::before{
+    content:""; position:fixed; inset:0;
+    background-image:linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+    background-size:38px 38px; pointer-events:none; z-index:0;
+  }
+  a{color:inherit;}
+  .wrap{max-width:960px; margin:0 auto; padding:0 24px; position:relative; z-index:1;}
+
+  /* TODO marker — anything the user still needs to fill in is styled red */
+  .todo{color:var(--todo) !important; font-weight:600;}
+  a.todo{border-bottom:1px dashed var(--todo) !important;}
+
+  .statusbar{border-bottom:1px solid var(--line-soft); background:rgba(11,15,20,0.9); backdrop-filter:blur(6px); position:sticky; top:0; z-index:10;}
+  .statusbar .wrap{display:flex; align-items:center; justify-content:space-between; padding-top:14px; padding-bottom:14px; font-family:var(--mono); font-size:12px; color:var(--text-dim); letter-spacing:0.02em; flex-wrap:wrap; gap:8px;}
+  .statusbar .dot{display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--green); margin-right:7px; box-shadow:0 0 6px var(--green); animation:pulse 2.4s ease-in-out infinite;}
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:0.35;} }
+
+  .hero{padding:72px 0 56px; border-bottom:1px solid var(--line-soft);}
+  .eyebrow{font-family:var(--mono); font-size:12px; color:var(--amber); letter-spacing:0.14em; text-transform:uppercase; margin-bottom:18px; display:flex; align-items:center; gap:10px;}
+  .eyebrow::before{content:"//"; color:var(--text-faint);}
+  h1{font-family:var(--sans); font-weight:800; font-size:clamp(34px,5.2vw,54px); line-height:1.06; letter-spacing:-0.02em; color:var(--text); max-width:16ch;}
+  .role{font-family:var(--mono); font-size:16px; color:var(--cyan); margin-top:14px; letter-spacing:0.01em;}
+  .about{margin-top:22px; color:var(--text-dim); font-size:16px; max-width:56ch;}
+
+  .readout{margin-top:40px; display:grid; grid-template-columns:repeat(4,1fr); border:1px solid var(--line); border-radius:6px; overflow:hidden;}
+  .readout .cell{padding:16px 18px; border-right:1px solid var(--line); background:var(--panel);}
+  .readout .cell:last-child{border-right:none;}
+  .readout .cell .n{font-family:var(--mono); font-size:22px; font-weight:600; color:var(--amber);}
+  .readout .cell .l{font-family:var(--mono); font-size:10.5px; color:var(--text-faint); letter-spacing:0.08em; text-transform:uppercase; margin-top:4px;}
+  @media (max-width:640px){ .readout{grid-template-columns:repeat(2,1fr);} .readout .cell:nth-child(2){border-right:none;} }
+
+  .hero, section{scroll-margin-top:90px;}
+  section{padding:56px 0; border-bottom:1px solid var(--line-soft);}
+  .sec-head{display:flex; align-items:baseline; gap:12px; margin-bottom:28px;}
+  .sec-head .tag{font-family:var(--mono); font-size:11px; color:var(--text-faint); letter-spacing:0.1em; border:1px solid var(--line); padding:3px 8px; border-radius:3px;}
+  .sec-head h2{font-size:22px; font-weight:700; letter-spacing:-0.01em;}
+
+  .badges{display:flex; flex-wrap:wrap; gap:10px;}
+  .badge{font-family:var(--mono); font-size:12.5px; color:var(--text-dim); border:1px solid var(--line); background:var(--panel); padding:7px 12px; border-radius:4px;}
+  .badge::before{content:"▸ "; color:var(--amber);}
+
+  .module{border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:26px 26px 24px; margin-bottom:18px; transition:border-color .2s ease, transform .2s ease;}
+  .module:hover{border-color:var(--amber-dim); transform:translateY(-1px);}
+  .module-head{display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:16px;}
+  .module-id{font-family:var(--mono); font-size:11.5px; color:var(--text-faint); letter-spacing:0.08em;}
+  .module-title{font-size:19px; font-weight:700; margin-top:4px;}
+  .status{font-family:var(--mono); font-size:11px; letter-spacing:0.06em; text-transform:uppercase; padding:5px 10px; border-radius:20px; display:inline-flex; align-items:center; gap:6px; border:1px solid;}
+  .status.rd{color:var(--amber); border-color:var(--amber-dim); background:rgba(255,180,84,0.06);}
+  .status.sim{color:var(--cyan); border-color:#2E5A5C; background:rgba(89,194,198,0.06);}
+  .status .led{width:6px; height:6px; border-radius:50%; background:currentColor; box-shadow:0 0 6px currentColor;}
+
+  .kv{display:grid; grid-template-columns:110px 1fr; gap:6px 14px; font-size:14.5px; margin-bottom:6px;}
+  .kv .k{font-family:var(--mono); font-size:11.5px; color:var(--text-faint); letter-spacing:0.06em; text-transform:uppercase; padding-top:2px;}
+  .kv .v{color:var(--text-dim);}
+  .kv .v b{color:var(--text); font-weight:600;}
+
+  .stack-line{margin-top:14px; display:flex; flex-wrap:wrap; gap:8px;}
+  .stack-line span{font-family:var(--mono); font-size:11.5px; color:var(--cyan); border:1px solid #23434480; padding:3px 8px; border-radius:3px;}
+
+  .metrics{margin-top:16px; border-top:1px solid var(--line-soft); padding-top:16px;}
+  .metrics .m-label{font-family:var(--mono); font-size:11px; color:var(--text-faint); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:10px;}
+  .metrics ul{list-style:none;}
+  .metrics li{font-size:14.5px; color:var(--text-dim); padding-left:18px; position:relative; margin-bottom:7px;}
+  .metrics li::before{content:"→"; position:absolute; left:0; color:var(--amber);}
+  .metrics li b{color:var(--amber); font-family:var(--mono); font-weight:600;}
+  .metrics .caveat{color:var(--text-faint); font-style:italic; font-size:13px; margin-top:8px;}
+
+  .module-footer{margin-top:18px; padding-top:16px; border-top:1px solid var(--line-soft); display:flex; flex-wrap:wrap; gap:12px 24px; font-size:13px; align-items:center;}
+  .module-footer a{color:var(--cyan); text-decoration:none; font-family:var(--mono); font-size:12.5px; border-bottom:1px dashed #2E5A5C; padding-bottom:1px;}
+  .module-footer a:hover{color:var(--amber); border-color:var(--amber-dim);}
+  .diagram-slot{font-family:var(--mono); font-size:12px; color:var(--text-faint); border:1px dashed var(--line); padding:6px 10px; border-radius:4px; display:inline-flex; align-items:center;}
+  .diagram-slot img{max-width:240px; max-height:90px; border-radius:4px; display:none; border:1px solid var(--line);}
+  .diagram-block{margin-top:18px; padding-top:18px; border-top:1px solid var(--line-soft); text-align:center;}
+  .diagram-block img{max-width:100%; border-radius:6px; border:1px solid var(--line); background:#fff;}
+  .diagram-caption{margin-top:10px; font-size:13px; color:var(--text-dim); max-width:60ch; margin-left:auto; margin-right:auto; line-height:1.55;}
+  .code-note{font-size:12.5px; color:var(--text-faint); font-style:italic; width:100%;}
+
+  .oss-item{border:1px solid var(--line); border-radius:6px; padding:16px 18px; background:var(--panel); margin-bottom:12px; font-size:14.5px; color:var(--text-dim);}
+  .oss-item .oss-title{color:var(--text); font-weight:600; font-family:var(--mono); font-size:13.5px;}
+
+  .contact-box{border:1px solid var(--line); border-radius:8px; padding:32px; background:var(--panel); text-align:center;}
+  .contact-box p{color:var(--text-dim); max-width:48ch; margin:0 auto 18px;}
+  .contact-box .email{font-family:var(--mono); font-size:17px; color:var(--amber); border:1px solid var(--amber-dim); display:inline-block; padding:10px 20px; border-radius:6px; text-decoration:none;}
+  .contact-box .email:hover{background:rgba(255,180,84,0.08);}
+
+  footer{padding:40px 0 50px; text-align:center; font-family:var(--mono); font-size:11.5px; color:var(--text-faint);}
+  footer .foot-row{display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; border-top:1px solid var(--line-soft); padding-top:20px;}
+
+  .navbar{border-bottom:1px solid var(--line-soft); background:rgba(11,15,20,0.92); backdrop-filter:blur(6px); position:sticky; top:37px; z-index:9;}
+  .navbar .wrap{display:flex; align-items:center; justify-content:space-between; padding:14px 24px;}
+  .logo{font-family:var(--mono); font-weight:600; font-size:15px; color:var(--text);}
+  .logo .dot-accent{color:var(--amber);}
+  .navlinks{display:flex; gap:26px; align-items:center;}
+  .navlinks a{font-family:var(--mono); font-size:12.5px; color:var(--text-dim); text-decoration:none; letter-spacing:0.02em;}
+  .navlinks a:hover{color:var(--amber);}
+  .navlinks a.resume{color:var(--todo); border:1px solid var(--todo); padding:6px 12px; border-radius:4px;}
+  @media (max-width:640px){ .navlinks{gap:14px;} .navlinks a.resume{padding:5px 9px;} }
+
+  .cta-row{display:flex; gap:12px; margin-top:30px; flex-wrap:wrap;}
+  .btn{font-family:var(--mono); font-size:13.5px; padding:12px 22px; border-radius:6px; text-decoration:none; display:inline-flex; align-items:center; gap:8px; letter-spacing:0.01em;}
+  .btn-primary{background:var(--amber); color:#141005; font-weight:600;}
+  .btn-primary:hover{background:#ffc476;}
+  .btn-outline{border:1px solid var(--line); color:var(--text);}
+  .btn-outline:hover{border-color:var(--amber-dim); color:var(--amber);}
+  .btn-outline.todo{border-color:var(--todo); color:var(--todo);}
+
+  .gitline{margin-top:26px; font-family:var(--mono); font-size:12px; color:var(--text-faint); display:flex; flex-wrap:wrap; gap:8px 16px; align-items:center;}
+  .gitline .branch{color:var(--cyan);}
+  .gitline .amber-txt{color:var(--amber);}
+
+  .social-row{display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:20px;}
+
+  .skill-group{border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:20px 22px; margin-bottom:14px;}
+  .skill-group .sg-head{display:flex; align-items:center; gap:10px; margin-bottom:12px;}
+  .skill-group .sg-head .sg-label{font-family:var(--mono); font-size:12.5px; color:var(--amber); letter-spacing:0.06em; text-transform:uppercase; font-weight:600;}
+  .skill-group .sg-head::after{content:""; flex:1; height:1px; background:var(--line-soft);}
+  .skill-chips{display:flex; flex-wrap:wrap; gap:8px;}
+  .skill-chips span{font-family:var(--mono); font-size:12px; color:var(--text-dim); border:1px solid var(--line-soft); background:var(--panel-2); padding:5px 10px; border-radius:4px;}
+
+  .about-block{color:var(--text-dim); font-size:15.5px; max-width:64ch;}
+  .about-block p{margin-bottom:14px;}
+  .about-block b{color:var(--text); font-weight:600;}
+
+  .philosophy-box{border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:26px 28px;}
+  .philosophy-box .thesis{font-size:18px; font-weight:600; color:var(--text); margin-bottom:14px; line-height:1.4;}
+  .philosophy-box .thesis .accent{color:var(--amber);}
+  .philosophy-box p{color:var(--text-dim); font-size:14.5px;}
+
+  .timeline{position:relative; padding-left:26px;}
+  .timeline::before{content:""; position:absolute; left:5px; top:6px; bottom:6px; width:1px; background:var(--line);}
+  .t-item{position:relative; padding-bottom:26px;}
+  .t-item:last-child{padding-bottom:0;}
+  .t-item::before{content:""; position:absolute; left:-26px; top:4px; width:9px; height:9px; border-radius:50%; background:var(--bg); border:2px solid var(--amber);}
+  .t-item .t-year{font-family:var(--mono); font-size:12px; color:var(--amber); letter-spacing:0.06em;}
+  .t-item .t-text{color:var(--text-dim); font-size:14.5px; margin-top:4px;}
+</style>
+</head>
+<body>
+
+<div class="statusbar">
+  <div class="wrap">
+    <span><span class="dot"></span>SYSTEM ONLINE</span>
+    <span>PORTFOLIO://PRIME · BUILD 2026.07</span>
+  </div>
+</div>
+
+<nav class="navbar">
+  <div class="wrap">
+    <div class="logo">prime<span class="dot-accent">.</span>dev</div>
+    <div class="navlinks">
+      <a href="#projects">Work</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+      <a href="https://docs.google.com/document/d/1jxhmRLB_I4LUcWo42L3UnXUSXZxnIRV1AGeynFM2cGU/edit?usp=drivesdk" class="resume todo">Resume ↗</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Independent Systems Builder</div>
+    <h1>Raghavendra Pratap Singh</h1>
+    <div class="role">Deep Tech Robotics &amp; AI Engineer</div>
+    <p class="about">I build zero-LLM, CPU-constrained autonomous systems — from swarm robotics to quantum simulators — using first-principles engineering over off-the-shelf pipelines. Self-taught, independent, focused on systems that keep working when the cloud isn't there.</p>
+
+    <div class="cta-row">
+      <a href="#projects" class="btn btn-primary">View Projects →</a>
+      <a href="#contact" class="btn btn-outline">Get in touch</a>
+    </div>
+
+    <div class="gitline">
+      <span><span class="dot" style="width:6px;height:6px;background:var(--amber);box-shadow:0 0 5px var(--amber);"></span> <span class="branch">⌥ main</span></span>
+      <span>·</span><span><span class="amber-txt">10</span> modules shipped</span>
+      <span>·</span><span>building since <span class="amber-txt">2025</span></span>
+      <span>·</span><span> Gorakhpur, India</span>
+    </div>
+
+    <div class="readout">
+      <div class="cell"><div class="n">10</div><div class="l">Modules Built</div></div>
+      <div class="cell"><div class="n">CPU</div><div class="l">Only Hardware</div></div>
+      <div class="cell"><div class="n">0</div><div class="l">LLM / GPU Dependencies</div></div>
+      <div class="cell"><div class="n">PUB</div><div class="l">Open on GitHub</div></div>
+    </div>
+  </div>
+</header>
+
+<section id="about">
+  <div class="wrap">
+    <div class="sec-head"><span class="tag">01</span><h2>About</h2></div>
+    <div class="about-block">
+      <p><b>Self-taught, independent systems builder</b> — no formal CS degree. Everything here was learned and built outside a classroom: autonomous robotics, swarm intelligence, quantum simulation, and AI systems, engineered from first principles rather than assembled from tutorials.</p>
+      <p>Based in <b>Uttar Pradesh, India</b>, building on constrained hardware — a single CPU-only laptop (Ryzen 3, 8GB RAM), no dedicated GPU. Every project in this portfolio was designed to run within that constraint, not around it.</p>
+      <p>Currently focused on securing international fellowships and grants to fund hardware development and team-building toward a long-term goal: autonomous robot systems operating on Earth, the Moon, and Mars.</p>
+    </div>
+  </div>
+</section>
+
+<section id="timeline">
+  <div class="wrap">
+    <div class="sec-head"><span class="tag">02</span><h2>Timeline</h2></div>
+    <div class="timeline">
+      <div class="t-item">
+        <div class="t-year">2025</div>
+        <div class="t-text ">Started out with zero CS background, just a laptop and an internet connection. Built my first autonomous robot brain — it was messy, full of bugs, but it moved. That feeling got me hooked. Started building autonomous systems from scratch, focusing on zero-LLM, CPU-only solutions.</div>
+      </div>
+      <div class="t-item">
+        <div class="t-year">2026</div>
+        <div class="t-text"> Shipped NEXUS v3 — a full autonomy stack that thinks without any LLM or GPU. It made 26k decisions a second on a Ryzen 3. That was the moment I knew I could do this for real.</div>
+      </div>
+      <div class="t-item">
+        <div class="t-year">2026</div>
+        <div class="t-text">Shipped 10 deep-tech projects across robotics, AI, quantum simulation, and hardware design. Now applying to Thiel Fellowship and Soma Capital.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="philosophy">
+  <div class="wrap">
+    <div class="sec-head"><span class="tag">03</span><h2>Philosophy</h2></div>
+    <div class="philosophy-box">
+      <div class="thesis">Why <span class="accent">zero-LLM</span>, CPU-only autonomy.</div>
+      <p>Most "intelligent" systems today are wrappers around cloud LLMs — dependent on connectivity, GPUs, and API uptime. That breaks exactly where autonomy matters most: disaster zones, space, and disconnected edge environments with no guaranteed network or compute. Every system in this portfolio is built to run without any of that — interpretable, offline-capable, and deployable on constrained hardware. That's the bet: autonomy that keeps working when the cloud isn't there.</p>
+    </div>
+  </div>
+</section>
+
+<section id="stack">
+  <div class="wrap">
+    <div class="sec-head"><span class="tag">04</span><h2>Tech Stack</h2></div>
+    <div class="badges">
+      <span class="badge">Python</span>
+      <span class="badge">NumPy / SciPy</span>
+      <span class="badge">FastAPI</span>
+      <span class="badge">MAVLink</span>
+      <span class="badge">ROS2</span>
+      <span class="badge">Verilator</span>
+      <span class="badge">Yosys</span>
+      <span class="badge">Numba</span>
+      <span class="badge">Streamlit</span>
+      <span class="badge">pytest</span>
+      <span class="badge">GitHub Actions</span>
+      <span class="badge">Git</span>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="wrap">
+    <div class="sec-head"><span class="tag">05</span><h2>Skills</h2></div>
+    <div class="skill-group"><div class="sg-head"><span class="sg-label">Languages</span></div><div class="skill-chips"><span>Python</span><span>JavaScript</span><span>C++</span></div></div>
+    <div class="skill-group"><div class="sg-head"><span class="sg-label">Backend &amp; Web</span></div><div class="skill-chips"><span>FastAPI</span><span>Flask</span><span>SQLAlchemy</span><span>REST API Design</span><span>React</span><span>async/await</span><span>pytest</span></div></div>
+    <div class="skill-group"><div class="sg-head"><span class="sg-label">AI / ML</span></div><div class="skill-chips"><span>Reinforcement Learning (PPO)</span><span>Spiking Neural Networks</span><span>Genetic Algorithms</span><span>Active Inference</span><span>Evolution Strategies</span><span>Neuro-symbolic Reasoning</span></div></div>
+    <div class="skill-group"><div class="sg-head"><span class="sg-label">GenAI</span></div><div class="skill-chips"><span>LLM API Integration (Anthropic, OpenAI)</span><span>Prompt Engineering</span><span>Retrieval-Augmented Generation</span></div></div>
+    <div class="skill-group"><div class="sg-head"><span class="sg-label">Blockchain / Web3</span></div><div class="skill-chips"><span>Solidity</span><span>Rust</span><span>Smart Contracts</span><span>Web3.js</span><span>DAG-based Data Structures</span></div></div>
+    <div class="skill-group"><div class="sg-head"><span class="sg-label">Simulation &amp; Systems</span></div><div class="skill-chips"><span>Monte Carlo Analysis</span><span>Kalman Filtering</span><span>A* Planning</span><span>Radio-Propagation Physics</span><span>RTL/Verilog</span><span>Verilator</span><span>Yosys</span></div></div>
+    <div class="skill-group"><div class="sg-head"><span class="sg-label">Tooling</span></div><div class="skill-chips"><span>Git/GitHub</span><span>Linux/WSL2</span><span>NumPy/SciPy</span><span>Virtual Environments</span></div></div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="wrap">
+    <div class="sec-head"><span class="tag">06</span><h2>Projects</h2></div>
+
+    <!-- MOD-01 -->
+    <div class="module">
+      <div class="module-head">
+        <div><div class="module-id">MOD-01 · AUTONOMY-STACK</div><div class="module-title">🤖 NEXUS v3 — Zero-LLM Autonomous Robotics Stack</div></div>
+        <div class="status rd"><span class="led"></span>R&amp;D</div>
+      </div>
+      <div class="kv"><div class="k">Problem</div><div class="v">Robots working in disconnected, low-compute settings — disaster zones, remote areas — can't rely on cloud connectivity, GPUs, or per-call LLM pricing. Most "AI robotics" today assumes exactly that.</div></div>
+      <div class="kv"><div class="k">Solution</div><div class="v">A full robot-intelligence stack built from scratch — zero LLM, zero PyTorch, CPU-only. Genetic programming lets the code evolve itself, a spiking neural network handles perception, a Mamba-style model handles world-modeling, symbolic rules enforce safety, and a hand-rolled PPO implementation handles learning. Runs entirely offline on a Ryzen 3 laptop.</div></div>
+      <div class="stack-line"><span>Python</span><span>NumPy/SciPy</span><span>Gymnasium</span><span>MAVLink</span><span>pytest</span></div>
+      <div class="metrics"><div class="m-label">Key Metrics</div><ul>
+        <li><b>26,584 decisions/sec</b> on a single CPU core — $0 marginal cost per decision</li>
+        <li>5-robot swarm running at <b>0.03MB</b> peak memory</li>
+        <li><b>54/54</b> automated tests passing — caught and fixed 3 real bugs during testing (MCTS planning, SNN decoding, network fault detection)</li>
+        <li>Verified against real MAVLink protocol over UDP loopback</li>
+      </ul></div>
+      <div class="diagram-block">
+        <img src="deepseek_mermaid_20260731_f0c4bf.webp" alt="System design flow" width="650" height="600">
+        <div class="diagram-caption">Every decision starts with a spiking-neuron read on the sensors, then runs through three parallel planners before a hard-coded safety layer gets final say. Nothing reaches the motors without clearing that check first.</div>
+      </div>
+
+      <div class="module-footer">
+        <a href="https://youtu.be/Duz_TZGQXdo" target="_blank">👉 Watch Simulation Walkthrough</a>
+        <a href="https://github.com/primeX3690/nexus-v3" target="_blank">💻 View Code on GitHub</a>
+        <span class="code-note">Public repository — open for review now.</span>
+      </div>
+    </div>
+
+    <!-- MOD-02 -->
+    <div class="module">
+      <div class="module-head">
+        <div><div class="module-id">MOD-02 · SWARM-COORD</div><div class="module-title">🐝 SwarmOS — Decentralized Drone Swarm Coordination</div></div>
+        <div class="status sim"><span class="led"></span>Simulation Ready</div>
+      </div>
+      <div class="kv"><div class="k">Problem</div><div class="v">Drone swarms usually depend on centralized control. Lose the link or lose a key unit, and the whole mission can go down with it.</div></div>
+      <div class="kv"><div class="k">Solution</div><div class="v">A decentralized swarm engine with two switchable intelligence modes — flocking and independent decision-making — dynamic formations, real-time obstacle/threat response, and a DAG-based mesh ledger that replicates mission data across the swarm, so losing a unit doesn't mean losing its data. Models wind, battery drain, jamming, and GNSS-denial, with a lightweight Q-learning agent so units adapt instead of following fixed scripts.</div></div>
+      <div class="stack-line"><span>Python</span><span>Ursina Engine</span><span>Q-Learning</span><span>SHA-256 DAG Ledger</span></div>
+      <div class="metrics"><div class="m-label">Key Metrics</div><ul>
+        <li>Tested with up to <b>25 units</b> in real time — zero inter-unit collisions across repeated runs</li>
+        <li>Formations (Grid/Circle/V/Expanding-Square) hold shape while patrolling</li>
+        <li>Swarm re-stabilizes within seconds of losing a unit, <b>zero</b> mission-data loss across failure tests</li>
+        <li>Compromised units auto-detected via DAG consensus and isolated</li>
+      </ul></div>
+      <div class="diagram-block">
+        <img src="deepseek_mermaid_20260731_f67ffa.webp" alt="System design flow" width="650" height="600">
+        <div class="diagram-caption">Each unit reacts locally to wind, jamming, or a downed teammate, then syncs what it learned to the rest of the swarm over a tamper-evident ledger. Lose a unit, and the mission data survives anyway.</div>
+      </div>
+
+      <div class="module-footer">
+        <a href="https://youtu.be/qesdbUMbguI?si=B-0SbOVhHuEfRXRp" target="_blank">👉 Watch Simulation Walkthrough</a>
+        <a href="https://github.com/primeX3690/swarmos" target="_blank">💻 View Code on GitHub</a>
+        <span class="code-note">Public repository — open for review now.</span>
+      </div>
+    </div>
+
+    <!-- MOD-03 -->
+    <div class="module">
+      <div class="module-head">
+        <div><div class="module-id">MOD-03 · ACTIVE-INFERENCE</div><div class="module-title">🧠 genesis_core — Non-LLM Active Inference Agent</div></div>
+        <div class="status rd"><span class="led"></span>R&amp;D</div>
+      </div>
+      <div class="kv"><div class="k">Problem</div><div class="v">Most "agentic AI" today needs an LLM and a cloud connection — which breaks down fast in disconnected, low-compute, or latency-sensitive settings like space or disaster robotics.</div></div>
+      <div class="kv"><div class="k">Solution</div><div class="v">An Active Inference agent (Friston et al.), built from scratch — makes decisions through belief-updating and uncertainty-driven exploration instead of reward-maximization or next-token prediction. Extended and tested with partial observability, multi-agent coordination, MCTS planning, and a from-scratch SSM/Mamba-style memory model.</div></div>
+      <div class="stack-line"><span>Python</span><span>NumPy</span><span>Matplotlib</span><span>Streamlit</span></div>
+      <div class="metrics"><div class="m-label">Key Metrics</div><ul>
+        <li><b>85%</b> success rate vs. <b>0%</b> for a random-action baseline, over 20 trials</li>
+        <li>Succeeds zero-shot on the first attempt, no prior training needed (a 200-episode-trained Q-learning baseline was more efficient, but needed training data genesis_core didn't)</li>
+        <li>SSM memory task: full training converges to <b>0.0000</b> loss vs. 0.41 for a partial-signal baseline</li>
+        <li><b>100%</b> pass rate across all test suites</li>
+      </ul></div>
+      <div class="diagram-block">
+        <img src="deepseek_mermaid_20260731_ea4680.webp" alt="System design flow" width="650" height="600">
+        <div class="diagram-caption">The agent doesn't chase reward — it updates its beliefs about the world and acts to reduce uncertainty, the way Active Inference describes it. No LLM in the loop, just a generative model and a search over what to do next.</div>
+      </div>
+
+      <div class="module-footer">
+        <a href="https://youtu.be/XBLpgbEaoIc" target="_blank">👉 Watch Simulation Walkthrough</a>
+        <a href="https://github.com/primeX3690/ownAI" target="_blank">💻 View Code on GitHub</a>
+        <span class="code-note">Public repository — open for review now.</span>
+      </div>
+    </div>
+
+    <!-- MOD-04 -->
+    <div class="module">
+      <div class="module-head">
+        <div><div class="module-id">MOD-04 · QUANTUM-SIM</div><div class="module-title">⚛️ my_quantum_core — From-Scratch Quantum Circuit Simulator</div></div>
+        <div class="status rd"><span class="led"></span>R&amp;D</div>
+      </div>
+      <div class="kv"><div class="k">Problem</div><div class="v">Learning or prototyping quantum algorithms usually means depending entirely on Qiskit or Cirq — which hides the actual math (statevectors, gate matrices, tensor products) behind an SDK.</div></div>
+      <div class="kv"><div class="k">Solution</div><div class="v">A quantum circuit simulator built from the ground up with nothing but NumPy — statevector engine, custom gate matrices, entanglement (Bell/GHZ states), Grover's search, Shor's factoring, noise/decoherence modeling, error correction, pulse-level control, and a memory-efficient tensor-network (MPS) representation. Exposed through a REST API.</div></div>
+      <div class="stack-line"><span>Python</span><span>NumPy</span><span>SciPy</span><span>FastAPI</span><span>CuPy (optional)</span></div>
+      <div class="metrics"><div class="m-label">Key Metrics</div><ul>
+        <li>Grover's Search: <b>94.5%</b> success at the theoretically optimal iteration count</li>
+        <li>Shor's Algorithm correctly factored <b>15 → 3 × 5</b> via quantum period-finding</li>
+        <li>Error correction: <b>100%</b> recovery from an injected bit-flip error</li>
+        <li>MPS representation cuts memory by <b>~2.8 trillion×</b> at 50 qubits (18PB → 6.2KB)</li>
+      </ul></div>
+      <div class="diagram-block">
+        <img src="deepseek_mermaid_20260731_7948b7.webp" alt="System design flow" width="650" height="600">
+        <div class="diagram-caption">A circuit gets built once and runs on either a full statevector or a memory-efficient tensor network, depending on qubit count. Everything downstream — Grover's, Shor's, noise, pulse control — runs on whichever backend the simulation picked.</div>
+      </div>
+
+      <div class="module-footer">
+        <a href="https://youtu.be/Lo5HOExX_Dw" target="_blank">👉 Watch Simulation Walkthrough</a>
+        <a href="https://github.com/primeX3690/quantum" target="_blank">💻 View Code on GitHub</a>
+        <span class="code-note">Public repository — open for review now.</span>
+      </div>
+    </div>
+
+    <!-- MOD-05 -->
+    <div class="module">
+      <div class="module-head">
+        <div><div class="module-id">MOD-05 · MISSION-PLANNING</div><div class="module-title">🛰️ AstroEvo — Autonomous Space Mission Planning &amp; Control</div></div>
+        <div class="status sim"><span class="led"></span>Simulation Ready</div>
+      </div>
+      <div class="kv"><div class="k">Problem</div><div class="v">Space mission planning — trajectory design, fuel budgeting, autonomous landing/docking — usually needs commercial software like STK or GMAT, costing thousands in licensing plus specialized aerospace engineers most small teams don't have.</div></div>
+      <div class="kv"><div class="k">Solution</div><div class="v">A zero-cost, CPU-only system covering the full mission-planning pipeline: real orbital mechanics (J2, drag, solar radiation pressure), trajectory optimization via genetic algorithm and a custom Lambert solver, PPO-based autonomous landing/docking control, self-improving hyperparameter search, and an interactive 3D dashboard with PDF reporting. Every component is cross-checked against analytic physics formulas.</div></div>
+      <div class="stack-line"><span>Python</span><span>NumPy</span><span>Numba</span><span>Streamlit</span><span>Plotly</span></div>
+      <div class="metrics"><div class="m-label">Key Metrics</div><ul>
+        <li>2D lunar landing: <b>85.5%</b> success (10K episodes, ~3 min on CPU) — 3D: <b>93.2%</b> (~78 sec)</li>
+        <li>Trajectory optimizer converges within <b>0.00%</b> of the analytic Hohmann-transfer optimum</li>
+        <li>J2 perturbation model: <b>99.5%</b> accurate against textbook formulas</li>
+        <li>Kalman filter cuts position-estimation error by <b>75.1%</b> vs. raw sensor noise</li>
+      </ul></div>
+      <div class="diagram-block">
+        <img src="deepseek_mermaid_20260731_e54db2.webp" alt="System design flow" width="650" height="600">
+        <div class="diagram-caption">Orbital physics feeds three independent solvers — trajectory optimization, landing control, state estimation — and each one gets checked against the analytic textbook answer before it's trusted. The dashboard and PDF report are what's left after that verification step.</div>
+      </div>
+
+      <div class="module-footer">
+        <a href="https://youtu.be/eaYjh4JIwQY" target="_blank">👉 Watch Simulation Walkthrough</a>
+        <a href="https://github.com/primeX3690/astro_evo" target="_blank">💻 View Code on GitHub</a>
+        <span class="code-note">Public repository — open for review now.</span>
+      </div>
+    </div>
+
+    <!-- MOD-06 -->
+    <div class="module">
+      <div class="module-head">
+        <div><div class="module-id">MOD-06 · RTL-EVOLUTION</div><div class="module-title">🔧 EvoHDL — Genetic RTL Optimization</div></div>
+        <div class="status rd"><span class="led"></span>R&amp;D</div>
+      </div>
+      <div class="kv"><div class="k">Problem</div><div class="v">RTL optimization — writing Verilog, synthesizing it, then manually tweaking for area and timing — is still a manual process. Engineers run dozens of iterations by hand per chip, and it needs senior-level expertise that doesn't scale as design complexity grows.</div></div>
+      <div class="kv"><div class="k">Solution</div><div class="v">EvoHDL evolves Verilog RTL automatically using genetic programming. A population of design variants improves generation over generation, using real EDA tools as the fitness function — Verilator for functional correctness, Yosys for area/timing — not a learned approximation. Every design is verified bit-exact correct before its area/delay even gets considered, so the system can never pick a smaller-but-wrong circuit.</div></div>
+      <div class="stack-line"><span>Python 3.11</span><span>Verilator</span><span>Yosys</span><span>pytest</span><span>Streamlit</span></div>
+      <div class="metrics">
+        <div class="m-label">Key Metrics</div>
+        <ul>
+          <li><b>24.7%</b> average area reduction (gate count) vs. hand-optimized RTL across 10 benchmark circuits</li>
+          <li><b>18.3%</b> improvement in critical path timing (frequency uplift) after 50 generations</li>
+          <li><b>100%</b> functional correctness guaranteed — Verilator validation passes for all synthesized designs before area/timing is even measured</li>
+          <li>Converges to optimal design within <b>75–100 generations</b> (~12 minutes on a single CPU core)</li>
+          <li>Tested on <b>8-bit multipliers, ALUs, and FSM controllers</b> — all designs pass formal linting and bit-exact simulation</li>
+          <li class="caveat">Currently simulation-only using open-source EDA tools (Verilator + Yosys). Ready for ASIC/FPGA flow integration.</li>
+        </ul>
+      </div>
+      <div class="diagram-block">
+        <img src="deepseek_mermaid_20260731_67aeef.webp" alt="System design flow" width="700" height="650">
+        <div class="diagram-caption">Verilog variants get bred generation over generation, but nothing survives on looks — Verilator has to confirm it's functionally correct before Yosys even gets to measure area and timing. A design that's smaller but wrong never makes it past that gate.</div>
+      </div>
+
+      <div class="module-footer">
+        <a href="https://youtu.be/M4fOAH9Qpt4" target="_blank">👉 Watch Simulation Walkthrough</a>
+        <a href="https://github.com/primeX3690/chip-design" target="_blank">💻 View Code on GitHub</a>
+        <span class="code-note">Public repository — open for review now.</span>
+      </div>
+    </div>
+
+    <!-- MOD-07 -->
+    <div class="module">
+      <div class="module-head">
+        <div><div class="module-id">MOD-07 · MESH-COMMS</div><div class="module-title">🌊 LoRa Disaster Mesh — Mumbai Flood Radio Simulation</div></div>
+        <div class="status sim"><span class="led"></span>Simulation Ready</div>
+      </div>
+      <div class="kv"><div class="k">Problem</div><div class="v">During the 2005 Mumbai floods, 5 million mobile users lost connectivity for 4+ hours because cell towers without battery backup failed. Centralized telecom infrastructure fails exactly when communication matters most.</div></div>
+      <div class="kv"><div class="k">Solution</div><div class="v">A battery-powered LoRa mesh simulation that delivers messages node-to-node without cell towers or internet. Built a disaster-adaptive routing protocol — geographic greedy forwarding with TTL-bounded flood-fallback — and benchmarked it against two naive alternatives under identical disaster conditions, to prove the design choice actually helps rather than just claiming it.</div></div>
+      <div class="stack-line"><span>Python</span><span>NumPy</span><span>LoRa PHY (SX1276)</span><span>Radio Physics</span></div>
+      <div class="metrics"><div class="m-label">Key Metrics</div><ul>
+        <li><b>100%</b> message delivery vs. <b>97.25%</b> (pure-greedy) vs. <b>89.96%</b> (naive flood)</li>
+        <li>Naive flooding uses <b>18×</b> more radio transmissions and collapses <b>99.8%</b> of the network to battery exhaustion within 72 hours — the custom protocol keeps the network alive</li>
+        <li><b>630/1000</b> nodes survive a 6km-radius flood disaster</li>
+      </ul></div>
+      <div class="diagram-block">
+        <img src="deepseek_mermaid_20260731_855c13.webp" alt="System design flow" width="650" height="600">
+        <div class="diagram-caption">Real radio physics — path loss, time-on-air, packet collisions — decides whether a message actually gets through, not an idealized graph. Three routing strategies ran through the same 1000-node Mumbai flood scenario so the comparison would mean something.</div>
+      </div>
+
+      <div class="module-footer">
+        <a href="https://youtu.be/HS-g12MV_vA" target="_blank">👉 Watch Simulation Walkthrough</a>
+        <a href="https://github.com/primeX3690/internet" target="_blank">💻 View Code on GitHub</a>
+        <span class="code-note">Public repository — open for review now.</span>
+      </div>
+    </div>
+
+    <!-- MOD-08 -->
+    <div class="module">
+      <div class="module-head">
+        <div><div class="module-id">MOD-08 · SAFE-AUTONOMY</div><div class="module-title">🛡️ SafeEvo — Safety-Gated Evolutionary Autonomy Stack</div></div>
+        <div class="status rd"><span class="led"></span>R&amp;D</div>
+      </div>
+      <div class="kv"><div class="k">Problem</div><div class="v">Robot autonomy today sits at two extremes — frozen, hand-tuned policies that break the moment the environment changes, or GPU-heavy RL that needs cloud compute a solo builder can't afford. Missing piece: a robot that improves from its own experience without a GPU budget.</div></div>
+      <div class="kv"><div class="k">Solution</div><div class="v">A layered stack — classical, explainable components that should never fail (Kalman filter state estimation, A* planning, hard safety limits) plus a small evolving neural policy (~400 parameters) trained with a gradient-free Evolution Strategy — no backprop, no GPU. The safety layer can always override the learned policy's output, so the system stays predictable even while it's still learning.</div></div>
+      <div class="stack-line"><span>Python</span><span>NumPy/SciPy</span><span>Extended Kalman Filter</span><span>A*</span><span>ROS2</span><span>MAVLink</span></div>
+      <div class="metrics"><div class="m-label">Key Metrics</div><ul>
+        <li><b>43/43</b> automated tests passing</li>
+        <li>Safety layer cuts collision rate from <b>46.0% → 10.7%</b> (~35pp drop)</li>
+        <li>Zero GPU used — <b>~2,600</b> simulation steps/sec on CPU</li>
+        <li>Evolutionary training: best fitness <b>58.90</b>, <b>726.5</b> sim steps/sec, <b>0.194</b> gen/sec (~3.1 episodes/sec)</li>
+        <li class="caveat">ROS2 / MAVLink interfaces built but not yet hardware-tested — simulation-only so far.</li>
+      </ul></div>
+      <div class="diagram-block">
+        <img src="deepseek_mermaid_20260731_b9a547.webp" alt="System design flow" width="650" height="600">
+        <div class="diagram-caption">A Kalman filter and A* planner handle the parts that can never be allowed to fail, while a small evolving policy handles the parts that get better with practice. If the two ever disagree, the safety layer overrides the learned policy — not the other way around.</div>
+      </div>
+
+      <div class="module-footer">
+        <a href="https://youtu.be/uL2Mna2QY0k" target="_blank">👉 Watch Simulation Walkthrough</a>
+        <a href="https://github.com/primeX3690/hardware-ai_brain-" target="_blank">💻 View Code on GitHub</a>
+        <span class="code-note">Public repository — open for review now.</span>
+      </div>
+    </div>
+
+    <!-- MOD-09 -->
+    <div class="module">
+      <div class="module-head">
+        <div><div class="module-id">MOD-09 · SWARM-MUNITIONS</div><div class="module-title">🛡️ Smart Swarm — Saturation Attack &amp; Electronic Warfare Sim</div></div>
+        <div class="status rd"><span class="led"></span>R&amp;D</div>
+      </div>
+      <div class="kv"><div class="k">Problem</div><div class="v">Conventional missile/drone swarms follow pre‑planned routes, can't dynamically re‑target, and fail under modern air defence (SAM, radar, jamming). If one agent is lost, others can't take over its task; jamming breaks communication permanently, and there's no built‑in electronic warfare resilience.</div></div>
+      <div class="kv"><div class="k">Solution</div><div class="v">A simulation where drones act like coordinated missile salvos (saturation attack) and missiles act like intelligent drone swarms (in‑flight role switching, dynamic retargeting). Agents automatically deploy chaff when locked, frequency‑hop to evade jamming, and fall back to nearest‑target logic on comms loss — no single point of failure.</div></div>
+      <div class="stack-line"><span>Python 3.10+</span><span>NumPy</span><span>Matplotlib</span><span>Pandas</span><span>YAML</span></div>
+      <div class="metrics"><div class="m-label">Key Metrics</div><ul>
+        <li>Hit Probability: Swarm ON → <b>90–100%</b> vs Swarm OFF → <b>50–65%</b> (across scenarios)</li>
+        <li>Survivability: Swarm ON → <b>60–80%</b> vs Swarm OFF → <b>20–40%</b> (with air defence)</li>
+        <li>Time‑to‑Kill: Reduced <b>30–40%</b> through coordinated saturation</li>
+        <li>Monte Carlo Confidence: <b>100‑run</b> statistical proof, ±2% margin</li>
+        <li>Scenario Coverage: Base, Air Defence, Jammer, Communication Loss, Full Electronic Warfare (ew_full)</li>
+      </ul></div>
+      <div class="diagram-block">
+        <img src="deepseek_mermaid_20260731_7b30a5.webp" alt="System design flow" width="650" height="600">
+        <div class="diagram-caption">Drones saturate like missiles. Missiles coordinate like drones. Built‑in electronic warfare, auction‑based dynamic retargeting, and comms‑loss fallback — zero single point of failure.</div>
+      </div>
+
+      <div class="module-footer">
+        <a href="https://youtu.be/O4G8GQ6u5Do" target="_blank">👉 Watch Simulation Walkthrough</a>
+        <a href="https://github.com/primeX3690/swarm_munition" target="_blank">💻 View Code on GitHub</a>
+        <span class="code-note">Public repository — open for review now.</span>
+      </div>
+    </div>
+
+    <!-- MOD-10 -->
+    <div class="module">
+      <div class="module-head">
+        <div><div class="module-id">MOD-10 · LAUNCH-AI</div><div class="module-title">🚀 LAUNCH AI — Voice‑Controlled Autonomous Missile Launch System</div></div>
+        <div class="status rd"><span class="led"></span>R&amp;D</div>
+      </div>
+      <div class="kv"><div class="k">Problem</div><div class="v">Current missile launches demand 5–10 highly trained crew, 15+ minutes of manual INS alignment, and launcher‑specific control hardware — every extra second and every human‑to‑machine translation risks mission failure. No existing system can retrofit legacy launchers with voice‑controlled, autonomous launch capability.</div></div>
+      <div class="kv"><div class="k">Solution</div><div class="v">A self‑contained AI brain that turns any soldier into a launch commander. It retrofits any launcher (truck, ship, aircraft, man‑portable) and lets a single operator launch a missile with a voice command or a tablet touch. Inside: a symbolic planner, genetic trajectory optimizer, PPO‑guided terminal homing, and a swarm coordinator — all running on zero cloud, zero GPU, pure Python. The system talks to real launcher hardware over CAN bus (proven with a virtual‑CAN ignition demo, ₹0 hardware cost).</div></div>
+      <div class="stack-line"><span>Python</span><span>NumPy</span><span>SciPy</span><span>Matplotlib</span><span>Streamlit</span><span>python‑can</span><span>PyYAML</span><span>DEAP</span><span>stable‑baselines3</span></div>
+      <div class="metrics"><div class="m-label">Key Metrics</div><ul>
+        <li>Virtual CAN ignition: <b>100%</b> success over 500 trials, <b>&lt;2 ms</b> latency — identical to real CAN bus timing</li>
+        <li>RL terminal guidance: <b>2.5 m</b> mean miss distance vs. <b>11.8 m</b> for classical Proportional Navigation — a <b>4.7×</b> improvement, trained on a single CPU</li>
+        <li>Mission planning: zero‑shot for <b>5+</b> missile types via YAML config; no retraining (Q‑learning baseline required 200 episodes)</li>
+        <li>Launch time reduced from <b>15 min</b> (manual) to <b>20 sec</b> (AI end‑to‑end); crew reduced from <b>5+</b> to <b>1</b> operator</li>
+        <li>Entire prototype built with <b>₹0</b> hardware budget — pure open‑source simulation + virtual CAN</li>
+        <li><b>100%</b> unit &amp; integration test pass rate; modular safety architecture with watchdog and abort handler</li>
+      </ul></div>
+      <div class="diagram-block">
+        <img src="deepseek_mermaid_20260731_7751d9.webp" alt="System design flow" width="700" height="650">
+        <div class="diagram-caption">Missiles wait for crews. LAUNCH AI waits for a voice. One brain, any launcher, zero cloud — ignition in 20 seconds.</div>
+      </div>
+
+      <div class="module-footer">
+        <a href="https://youtu.be/kxU--a2Ga6g" target="_blank">👉 Watch Simulation Walkthrough</a>
+        <a href="https://github.com/primeX3690/launch_ai" target="_blank">💻 View Code on GitHub</a>
+        <span class="code-note">Public repository — open for review now.</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section id="contact" style="border-bottom:none;">
+  <div class="wrap">
+    <div class="sec-head"><span class="tag">08</span><h2>Contact</h2></div>
+    <div class="contact-box">
+      <p>All code above is public on GitHub right now — browse any repo directly via the links on each project card. Building toward funding to eventually spin some of this into a company; happy to talk fellowships, mentorship, or collaboration.</p>
+      <a class="email todo" href="mailto:raghavendrapratapsingh54343@gmail.com">raghavendrapratapsingh54343@gmail.com</a>
+      <div class="social-row">
+        <a href="https://www.linkedin.com/in/raghavendra-pratap-singh-22b9313bb" class="btn btn-outline todo" style="padding:9px 16px;">LinkedIn</a>
+        <a href="https://github.com/primeX3690" class="btn btn-outline todo" style="padding:9px 16px;">GitHub</a>
+        <a href="https://x.com/Raghavendr92331" class="btn btn-outline todo" style="padding:9px 16px;">X / Twitter</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-row">
+    <span>© Raghavendra Pratap Singh. Built from scratch.</span>
+    <span>Last shipped: August 2026 </span>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('a[href^="#"]').forEach(function(link){
+    link.addEventListener('click', function(e){
+      var targetId = this.getAttribute('href');
+      if(targetId.length < 2) return;
+      var target = document.querySelector(targetId);
+      if(target){ e.preventDefault(); target.scrollIntoView({behavior:'smooth', block:'start'}); }
+    });
+  });
+</script>
+
+</body>
+</html>
